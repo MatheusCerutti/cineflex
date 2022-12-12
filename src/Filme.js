@@ -1,27 +1,30 @@
 import styled from 'styled-components'
 import axios from 'axios'
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
-export default function Titulo(){
+export default function Titulo() {
 
-    const [itens,SetItens] = useState([])
+    const [itens, SetItens] = useState([])
 
-    useEffect(()=>{
+    useEffect(() => {
         const requisicao = axios.get("https://mock-api.driven.com.br/api/v8/cineflex/movies")
         requisicao.then(resposta => SetItens(resposta.data))
-    })
+    },[])
 
     console.log(itens)
     return (
         <div>
-        <Cabecalho>Selecione o Filme</Cabecalho>
-        <Lista>
-        {itens.map(image=>(
-            <Posters key={image.id}>
-                <Imagem src={image.posterURL} alt={image.title}></Imagem>
-            </Posters>
-        ))}
-        </Lista>
+            <Cabecalho>Selecione o Filme</Cabecalho>
+            <Lista>
+                {itens.map(image => (
+                    <Link to={`/sessoes/${image.id}`}>
+                        <Posters key={image.id}>
+                            <Imagem src={image.posterURL} alt={image.title}></Imagem>
+                        </Posters>
+                    </Link>
+                ))}
+            </Lista>
         </div>
     )
 }
@@ -49,7 +52,7 @@ margin-right:30px;
 margin-top:11px;
 `
 
-const Lista =styled.div`
+const Lista = styled.div`
 display:flex;
 justify-content: center;
 flex-wrap: wrap;
