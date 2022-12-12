@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 export default function Horario() {
 
@@ -22,7 +23,9 @@ export default function Horario() {
                         <Data>{dia.weekday} - {dia.date}</Data>
                         <Disponivel>
                             {dia.showtimes.map(sessoes => (
-                                <Sessao>{sessoes.name}</Sessao>
+                                <Link to={`/assentos/${sessoes.id}`}>
+                                    <Sessao key={sessoes.id}>{sessoes.name}</Sessao>
+                                </Link>
                             ))}
                         </Disponivel>
                     </div>
@@ -72,5 +75,8 @@ color: #FFFFFF;
 
 const Disponivel = styled.div`
 display:flex;
+a{
+    text-decoration: none;
+}
 `
 
