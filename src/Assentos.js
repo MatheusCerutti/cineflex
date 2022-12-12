@@ -10,6 +10,8 @@ export default function Assentos(){
     const parametros = useParams()
     const [assentos, setAssentos] = useState([])
     const [selecionados,setSelecionados] = useState([])
+    const [nome,setNome] = useState("")
+    const [cpf,setCPF] = useState("")
 
     const poltrona = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${parametros.assentoId}/seats`)
     poltrona.then(resposta => setAssentos(resposta.data.seats))
@@ -22,7 +24,7 @@ export default function Assentos(){
             <Sala>
             {assentos.map(cadeira => (
                     
-                        <Lugares key={cadeira.id} onClick={() => selecionarAssento(cadeira.id)} background={selecionados.includes(cadeira.id)}>
+                        <Lugares key={cadeira.id} onClick={() => selecionarAssento(cadeira.id,cadeira.isAvailable)} background={cadeira.isAvailable ? selecionados.includes(cadeira.id):"#FBE192"}>
                             {cadeira.name}
                         </Lugares>
                 
@@ -45,43 +47,86 @@ export default function Assentos(){
                 </Caixa>
             </Legendas>
             </Corpo>
-            <Nome>Nome do Comprador:
-                <input placeholder="Digite seu nome..."></input>
-            </Nome>
-            <CPF>CPF do Comprador:
-            <input placeholder="Digite seu CPF..."></input>
-            </CPF>
+            <Dados onSubmit={mandarDados}>
+            <Info>
+                <Nome htmlFor='name'>Nome do Comprador:</Nome>
+                <input id='name' name="Nome" type="text" placeholder="Digite seu nome..." value={nome} onChange={e => setNome(e.target.value)} required></input>
+            </Info>
+            <Info>
+            <CPF htmlFor='cpf'>CPF do Comprador:</CPF>
+            <input id='cpf' name="CPF" type="number" placeholder="Digite seu CPF..." value={cpf} onChange={e => setCPF(e.target.value)} required></input>
+            </Info>
+            <Link to="/sucesso">
             <Botao>Reservar assento(s)</Botao>
+            </Link>
+            </Dados>
            
             </div>
     )
 
-    function selecionarAssento(id){
-        let array = [...selecionados]
+    function selecionarAssento(id,disponivel){
+        if(disponivel){
+            let array = [...selecionados]
 
-        if (array.includes(id)){
-            
-
-        }else{
-            array.push(id)
-            setSelecionados(array)
+            if (array.includes(id)){
+                
+    
+            }else{
+                array.push(id)
+                setSelecionados(array)
+            }
+        } else {
+            alert("Cadeira indisponível");
         }
+
+       
+    }
+
+    function mandarDados(e){
+        e.preventDefault()
+        const dados = {ids:selecionados,name:nome,cpf}
+        console.log(dados)
+
+        //const promise = axios.post("https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",dados)
+
     }
 }
 
-
-const Nome = styled.div`
-input{
-    ::placeholder{
-
-    }
-}
+const Dados = styled.form`
+display:flex;
+flex-direction:column;
+align-items: center;
 `
 
-const CPF = styled.div`
+const Info = styled.div`
+display:flex;
+flex-direction: column;
+margin-bottom: 8px;
+input{
+    margin-top: 2px;
+    width:327px;
+    height:51px;
+    box-sizing: border-box;
+    border: 1px solid #D5D5D5;
+    border-radius: 3px;
+    ::placeholder{
+        font-family: Roboto;
+        font-size: 18px;
+        font-style: italic;
+        color:#AFAFAF;
+    }
+
+}
+`
+const Nome = styled.label`
+`
+
+const CPF = styled.label`
+
 `
 
 const Botao = styled.button`
+margin-top: 50px;
 width:225px;
 height:42px;
 background-color: #E8833A;
@@ -123,6 +168,7 @@ display:flex;
 justify-content: center;
 align-items: center;
 flex-direction: column;
+margin-bottom: 41px;
 `
 
 const Cabecalho = styled.div`
@@ -146,7 +192,7 @@ width:26px;
 height:26px;
 box-sizing: border-box;
 border: 1px solid #808F9D;
-background-color: ${props=>props.background ?  "#1AAE9E" : "#C3CFD9"};
+background-color: ${props=>props.background=="#FBE192" ? "#FBE192": (props.background ?  "#1AAE9E" : "#C3CFD9")};
 border-radius: 12px;
 font-family: Roboto;
 font-size: 11px;
