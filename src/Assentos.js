@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 
@@ -13,11 +13,13 @@ export default function Assentos(props){
     const [nome,setNome] = useState("")
     const [cpf,setCPF] = useState("")
     const navigate = useNavigate()
+    const [numassentos,setNumassentos] = useState([])
 
+    useEffect(() => {
     const poltrona = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${parametros.assentoId}/seats`)
     poltrona.then(resposta => setAssentos(resposta.data.seats))
     poltrona.then(resposta => props.setData(resposta.data.day.date))
-    poltrona.then(resposta => props.setHorario(resposta.data.name))
+    poltrona.then(resposta => props.setHorario(resposta.data.name))},[])
 
 
     return(
@@ -27,7 +29,7 @@ export default function Assentos(props){
             <Sala>
             {assentos.map(cadeira => (
                     
-                        <Lugares key={cadeira.id} onClick={() => selecionarAssento(cadeira.id,cadeira.isAvailable)} background={cadeira.isAvailable ? (selecionados.includes(cadeira.id) ?  "#1AAE9E" : "#C3CFD9"):"#FBE192"}>
+                        <Lugares onClick={() => selecionarAssento(cadeira.id,cadeira.isAvailable,cadeira.name)} background={cadeira.isAvailable ? (selecionados.includes(cadeira.id) ?  "#1AAE9E" : "#C3CFD9"):"#FBE192"}>
                             {cadeira.name}
                         </Lugares>
                 
@@ -76,19 +78,25 @@ export default function Assentos(props){
             </div>
     )
 
-    function selecionarAssento(id,disponivel){
+    function selecionarAssento(id,disponivel,num){
         if(disponivel){
             let array = [...selecionados]
+            let numeros = [...numassentos]
 
             if (array.includes(id)){
                 const array2 = array.filter(diferentes => diferentes != id)
+                const numeros2 = numeros.filter(diferentes => diferentes != num)
 
                 setSelecionados(array2)
+                setNumassentos(numeros2)
                 
     
             }else{
                 array.push(id)
                 setSelecionados(array)
+                numeros.push(num)
+                setNumassentos(numeros)
+
             }
         } else {
             alert("Cadeira indisponível");
@@ -99,7 +107,7 @@ export default function Assentos(props){
 
     function mandarDados(e){
         e.preventDefault()
-        const dados = {ids:nome,name:nome,cpf:cpf}
+        const dados = {ids:selecionados,name:nome,cpf}
         const url_post=`https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many`
         const promise = axios.post(url_post,dados)
         console.log(dados)
@@ -109,15 +117,13 @@ export default function Assentos(props){
         
         promise.then(resposta => {
             console.log(resposta.data)
-            props.setAssentosescolhidos(assentos)
-            props.setComprador(selecionados)
-            props.setCPFCom(selecionados)
+            props.setAssentosescolhidos(numassentos)
+            props.setComprador(nome)
+            props.setCPFCom(cpf)
             navigate("/sucesso")
         })
 
         promise.catch(err => console.log(err))
-        //promise.then(resposta => setComprador(selecionados))
-        //promise.then(resposta => setCPFCom(selecionados))
     }
 }
 
@@ -138,7 +144,7 @@ img{
 }
 `
 const Nomefilme= styled.div`
-font-family: 'Roboto';
+font-family: 'Roboto', sans-serif;
 font-style: normal;
 font-weight: 400;
 font-size: 26px;
@@ -175,11 +181,13 @@ input{
     box-sizing: border-box;
     border: 1px solid #D5D5D5;
     border-radius: 3px;
+    padding-left: 18px;
     ::placeholder{
-        font-family: Roboto;
+        font-family: 'Roboto', sans-serif;
         font-size: 18px;
         font-style: italic;
         color:#AFAFAF;
+        
     }
 
 }
@@ -198,7 +206,7 @@ height:42px;
 background-color: #E8833A;
 border-radius: 3px;
 color:#FFFFFF;
-font-family: Roboto;
+font-family: 'Roboto', sans-serif;
 font-size: 18px;
 `
 
@@ -210,7 +218,7 @@ justify-content:center;`
 
 const Texto = styled.h1`
 margin-top:5px;
-font-family:Roboto;
+font-family: 'Roboto', sans-serif;
 font-size:13px;
 line-height:15px;
 `
@@ -238,12 +246,13 @@ margin-bottom: 41px;
 `
 
 const Cabecalho = styled.div`
+margin-top:67px;
 height:110px;
 display:flex;
 justify-content: center;
 align-items: center;
 color:#293845;
-font-family: Roboto;
+font-family: 'Roboto', sans-serif;
 font-size: 24px;
 `
 
@@ -260,7 +269,7 @@ box-sizing: border-box;
 border: 1px solid #808F9D;
 background-color: ${props=>props.background};
 border-radius: 12px;
-font-family: Roboto;
+font-family: 'Roboto', sans-serif;
 font-size: 11px;
 line-height: 13px;
 display:flex;

@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 import axios from 'axios'
-import { useState } from 'react'
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom'
 
 export default function Horario(props) {
@@ -9,13 +9,14 @@ export default function Horario(props) {
     const parametros = useParams()
     const [horarios, setHorarios] = useState([])
 
-    const horas = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/movies/${parametros.filmeId}/showtimes`)
+    useEffect(() => {
+        const horas = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/movies/${parametros.filmeId}/showtimes`)
     horas.then(resposta => {
         setHorarios(resposta.data.days)
         props.setImagem(resposta.data.posterURL)
         props.setEscolhido(resposta.data.title)
     
-    })
+    })},[])
     
 
 
@@ -26,7 +27,7 @@ export default function Horario(props) {
             <Corpo>
                 {horarios.map(dia => (
 
-                    <div key={dia.id}>
+                    <div>
                         <Data>{dia.weekday} - {dia.date}</Data>
                         <Disponivel>
                             {dia.showtimes.map(sessoes => (
@@ -68,7 +69,7 @@ img{
 }
 `
 const Nomefilme= styled.div`
-font-family: 'Roboto';
+font-family: 'Roboto', sans-serif;
 font-style: normal;
 font-weight: 400;
 font-size: 26px;
@@ -93,16 +94,17 @@ margin-left: 24px;
 `
 
 const Cabecalho = styled.div`
+margin-top:67px;
 height:110px;
 display:flex;
 justify-content: center;
 align-items: center;
 color:#293845;
-font-family: Roboto;
+font-family: 'Roboto', sans-serif;
 font-size: 24px;`
 
 const Data = styled.div`
-font-family:Roboto;
+font-family: 'Roboto', sans-serif;
 font-size:20px;
 line-height: 23px;
 color: #293845;

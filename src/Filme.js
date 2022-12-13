@@ -19,7 +19,7 @@ export default function Titulo() {
             <Lista>
                 {itens.map(image => (
                     <Link to={`/sessoes/${image.id}`}>
-                        <Posters key={image.id}>
+                        <Posters>
                             <Imagem src={image.posterURL} alt={image.title}></Imagem>
                         </Posters>
                     </Link>
@@ -30,12 +30,13 @@ export default function Titulo() {
 }
 
 const Cabecalho = styled.div`
+margin-top:67px;
 height:110px;
 display:flex;
 justify-content: center;
 align-items: center;
 color:#293845;
-font-family: Roboto;
+font-family: 'Roboto', sans-serif;
 font-size: 24px;`
 
 const Posters = styled.div`
@@ -48,8 +49,7 @@ box-sizing: border-box;
 border-radius: 3px;
 box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, 0.1);
 background: #FFFFFF;
-margin-right:30px;
-margin-top:11px;
+margin: 11px 19px;
 `
 
 const Lista = styled.div`

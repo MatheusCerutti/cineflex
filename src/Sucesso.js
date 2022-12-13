@@ -1,41 +1,87 @@
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
 export default function Sucesso(props){
+
+    const navigate = useNavigate()
+    
     return (
         <div>
         <Cabecalho>Pedido feito com sucesso!</Cabecalho>
+        <Esquerda>
         <Titulo>Filme e sessão</Titulo>
         <Info>{props.filmeescolhido}</Info>
         <Info>{props.dataescolhida} {props.horarioescolhido}</Info>
         <Titulo>Ingressos</Titulo>
-        {props.assentoescolhido.map(assent => (<Info>Assento {assent}</Info>))}
+        {props.assentoescolhido.map(choice => <Info>Assento {choice}</Info>)}
         <Titulo>Comprador</Titulo>
-        <Info>Nome:{props.comprador}</Info>
-        <Info>CPF:{props.cpfcomprador}</Info>
+        <Info>Nome: {props.comprador}</Info>
+        <Info>CPF: {props.cpfcomprador}</Info>
+        </Esquerda>
+        <Centro>
+        <Botao onClick={()=>voltarHome()}>Voltar pra Home</Botao>
+        </Centro>
 
         </div>
     )
+
+    function voltarHome(){
+        props.setData("")
+        props.setHorario("")
+        props.setAssentosescolhidos([])
+        props.setComprador("")
+        props.setCPFCom("")
+        props.setImagem("")
+        props.setEscolhido("")
+
+        navigate("/")
+    }
 }
 
+const Botao = styled.button`
+margin-top: 60px;
+width:225px;
+height:42px;
+background-color: #E8833A;
+border-radius: 3px;
+color:#FFFFFF;
+font-family: 'Roboto', sans-serif;
+font-size: 18px;
+`
+
+const Centro = styled.div`
+display:flex;
+justify-content: center;
+`
+
+const Esquerda = styled.div`
+padding-left:28px;
+`
+
 const Cabecalho = styled.div`
+margin-top:67px;
 height:110px;
 display:flex;
 justify-content: center;
 align-items: center;
-color:#293845;
-font-family: Roboto;
+font-weight: 700;
+color:#247A6B;
+font-family: 'Roboto', sans-serif;
 font-size: 24px;`
 
 const Titulo = styled.div`
-font-family: Roboto;
+font-family: 'Roboto', sans-serif;
 font-weight: 700;
 font-size: 24px;
 line-height: 28px;
+margin-bottom:10px;
+margin-top:50px;
 
 `
 const Info = styled.div`
-font-family: Roboto;
+font-family: 'Roboto', sans-serif;
 font-weight: 400;
 font-size: 22px;
 line-height: 26px;
+margin-bottom: 5px;
 `
