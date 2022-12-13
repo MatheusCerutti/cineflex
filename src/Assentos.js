@@ -1,20 +1,23 @@
 import styled from 'styled-components'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 
-export default function Assentos(){
+export default function Assentos(props){
 
     const parametros = useParams()
     const [assentos, setAssentos] = useState([])
     const [selecionados,setSelecionados] = useState([])
     const [nome,setNome] = useState("")
     const [cpf,setCPF] = useState("")
+    const navigate = useNavigate()
 
     const poltrona = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${parametros.assentoId}/seats`)
     poltrona.then(resposta => setAssentos(resposta.data.seats))
+    poltrona.then(resposta => props.setData(resposta.data.day.date))
+    poltrona.then(resposta => props.setHorario(resposta.data.name))
 
 
     return(
@@ -24,7 +27,7 @@ export default function Assentos(){
             <Sala>
             {assentos.map(cadeira => (
                     
-                        <Lugares key={cadeira.id} onClick={() => selecionarAssento(cadeira.id,cadeira.isAvailable)} background={cadeira.isAvailable ? selecionados.includes(cadeira.id):"#FBE192"}>
+                        <Lugares key={cadeira.id} onClick={() => selecionarAssento(cadeira.id,cadeira.isAvailable)} background={cadeira.isAvailable ? (selecionados.includes(cadeira.id) ?  "#1AAE9E" : "#C3CFD9"):"#FBE192"}>
                             {cadeira.name}
                         </Lugares>
                 
@@ -54,12 +57,21 @@ export default function Assentos(){
             </Info>
             <Info>
             <CPF htmlFor='cpf'>CPF do Comprador:</CPF>
-            <input id='cpf' name="CPF" type="number" placeholder="Digite seu CPF..." value={cpf} onChange={e => setCPF(e.target.value)} required></input>
+            <input id='cpf' name="CPF" type="text" placeholder="Digite seu CPF..." value={cpf} onChange={e => setCPF(e.target.value)} required></input>
             </Info>
-            <Link to="/sucesso">
+            
             <Botao>Reservar assento(s)</Botao>
-            </Link>
+            
             </Dados>
+            <Rodape>
+                <Imagem>
+                    <img src={props.urlimagem}></img>
+                </Imagem>
+                <Nomefilme>
+                <p>{props.filmeescolhido}</p>
+                <p>{props.dataescolhida} - {props.horarioescolhido}</p>
+                </Nomefilme>
+            </Rodape>
            
             </div>
     )
@@ -69,6 +81,9 @@ export default function Assentos(){
             let array = [...selecionados]
 
             if (array.includes(id)){
+                const array2 = array.filter(diferentes => diferentes != id)
+
+                setSelecionados(array2)
                 
     
             }else{
@@ -84,13 +99,64 @@ export default function Assentos(){
 
     function mandarDados(e){
         e.preventDefault()
-        const dados = {ids:selecionados,name:nome,cpf}
+        const dados = {ids:nome,name:nome,cpf:cpf}
+        const url_post=`https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many`
+        const promise = axios.post(url_post,dados)
         console.log(dados)
+        
 
-        //const promise = axios.post("https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many",dados)
 
+        
+        promise.then(resposta => {
+            console.log(resposta.data)
+            props.setAssentosescolhidos(assentos)
+            props.setComprador(selecionados)
+            props.setCPFCom(selecionados)
+            navigate("/sucesso")
+        })
+
+        promise.catch(err => console.log(err))
+        //promise.then(resposta => setComprador(selecionados))
+        //promise.then(resposta => setCPFCom(selecionados))
     }
 }
+
+const Imagem = styled.div`
+width:64px;
+height: 89px;
+background: #FFFFFF;
+box-sizing: border-box;
+box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+border-radius: 2px;
+display:flex;
+justify-content: center;
+align-items: center;
+margin-right: 14px;
+img{
+    width:48px;
+    height:72px;
+}
+`
+const Nomefilme= styled.div`
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 400;
+font-size: 26px;
+line-height: 30px;
+`
+
+const Rodape = styled.div`
+height:117px;
+background: #DFE6ED;
+box-sizing: border-box;
+border: 1px solid #9EADBA;
+display:flex;
+position:fixed;
+bottom:0;
+width:100%;
+align-items: center;
+padding-left: 10px;
+`
 
 const Dados = styled.form`
 display:flex;
@@ -192,7 +258,7 @@ width:26px;
 height:26px;
 box-sizing: border-box;
 border: 1px solid #808F9D;
-background-color: ${props=>props.background=="#FBE192" ? "#FBE192": (props.background ?  "#1AAE9E" : "#C3CFD9")};
+background-color: ${props=>props.background};
 border-radius: 12px;
 font-family: Roboto;
 font-size: 11px;
