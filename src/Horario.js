@@ -27,12 +27,12 @@ export default function Horario(props) {
             <Corpo>
                 {horarios.map(dia => (
 
-                    <div>
+                    <div data-test="movie-day">
                         <Data>{dia.weekday} - {dia.date}</Data>
                         <Disponivel>
                             {dia.showtimes.map(sessoes => (
                                 <Link to={`/assentos/${sessoes.id}`}>
-                                    <Sessao>{sessoes.name}</Sessao>
+                                    <Sessao data-test="showtime">{sessoes.name}</Sessao>
                                 </Link>
                             ))}
                         </Disponivel>
@@ -40,7 +40,7 @@ export default function Horario(props) {
 
                 ))}
             </Corpo>
-            <Rodape>
+            <Rodape data-test="footer">
                 <Imagem>
                     <img src={props.urlimagem}></img>
                 </Imagem>

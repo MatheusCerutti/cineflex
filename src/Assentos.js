@@ -29,7 +29,7 @@ export default function Assentos(props){
             <Sala>
             {assentos.map(cadeira => (
                     
-                        <Lugares onClick={() => selecionarAssento(cadeira.id,cadeira.isAvailable,cadeira.name)} background={cadeira.isAvailable ? (selecionados.includes(cadeira.id) ?  "#1AAE9E" : "#C3CFD9"):"#FBE192"}>
+                        <Lugares onClick={() => selecionarAssento(cadeira.id,cadeira.isAvailable,cadeira.name)} background={cadeira.isAvailable ? (selecionados.includes(cadeira.id) ?  "#1AAE9E" : "#C3CFD9"):"#FBE192"} data-test="seat">
                             {cadeira.name}
                         </Lugares>
                 
@@ -55,17 +55,17 @@ export default function Assentos(props){
             <Dados onSubmit={mandarDados}>
             <Info>
                 <Nome htmlFor='name'>Nome do Comprador:</Nome>
-                <input id='name' name="Nome" type="text" placeholder="Digite seu nome..." value={nome} onChange={e => setNome(e.target.value)} required></input>
+                <input data-test="client-name" id='name' name="Nome" type="text" placeholder="Digite seu nome..." value={nome} onChange={e => setNome(e.target.value)} required></input>
             </Info>
             <Info>
             <CPF htmlFor='cpf'>CPF do Comprador:</CPF>
-            <input id='cpf' name="CPF" type="text" placeholder="Digite seu CPF..." value={cpf} onChange={e => setCPF(e.target.value)} required></input>
+            <input data-test="client-cpf" id='cpf' name="CPF" type="text" placeholder="Digite seu CPF..." value={cpf} onChange={e => setCPF(e.target.value)} required></input>
             </Info>
             
-            <Botao>Reservar assento(s)</Botao>
+            <Botao data-test="book-seat-btn" >Reservar assento(s)</Botao>
             
             </Dados>
-            <Rodape>
+            <Rodape data-test="footer">
                 <Imagem>
                     <img src={props.urlimagem}></img>
                 </Imagem>

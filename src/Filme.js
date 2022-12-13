@@ -19,7 +19,7 @@ export default function Titulo() {
             <Lista>
                 {itens.map(image => (
                     <Link to={`/sessoes/${image.id}`}>
-                        <Posters>
+                        <Posters data-test="movie">
                             <Imagem src={image.posterURL} alt={image.title}></Imagem>
                         </Posters>
                     </Link>

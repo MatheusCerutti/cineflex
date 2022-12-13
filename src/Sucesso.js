@@ -1,31 +1,37 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
-export default function Sucesso(props){
+export default function Sucesso(props) {
 
     const navigate = useNavigate()
-    
+
     return (
         <div>
-        <Cabecalho>Pedido feito com sucesso!</Cabecalho>
-        <Esquerda>
-        <Titulo>Filme e sessão</Titulo>
-        <Info>{props.filmeescolhido}</Info>
-        <Info>{props.dataescolhida} {props.horarioescolhido}</Info>
-        <Titulo>Ingressos</Titulo>
-        {props.assentoescolhido.map(choice => <Info>Assento {choice}</Info>)}
-        <Titulo>Comprador</Titulo>
-        <Info>Nome: {props.comprador}</Info>
-        <Info>CPF: {props.cpfcomprador}</Info>
-        </Esquerda>
-        <Centro>
-        <Botao onClick={()=>voltarHome()}>Voltar pra Home</Botao>
-        </Centro>
+            <Cabecalho>Pedido feito com sucesso!</Cabecalho>
+            <Esquerda>
+                <div  data-test="movie-info">
+                    <Titulo>Filme e sessão</Titulo>
+                    <Info>{props.filmeescolhido}</Info>
+                    <Info>{props.dataescolhida} {props.horarioescolhido}</Info>
+                </div>
+                <div data-test="seats-info">
+                    <Titulo>Ingressos</Titulo>
+                    {props.assentoescolhido.map(choice => <Info>Assento {choice}</Info>)}
+                </div>
+                <div data-test="client-info">
+                    <Titulo>Comprador</Titulo>
+                    <Info>Nome: {props.comprador}</Info>
+                    <Info>CPF: {props.cpfcomprador}</Info>
+                </div>
+            </Esquerda>
+            <Centro>
+                <Botao data-test="go-home-btn" onClick={() => voltarHome()}>Voltar pra Home</Botao>
+            </Centro>
 
         </div>
     )
 
-    function voltarHome(){
+    function voltarHome() {
         props.setData("")
         props.setHorario("")
         props.setAssentosescolhidos([])
